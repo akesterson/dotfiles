@@ -1,0 +1,8 @@
+(eval-after-load "rcirc"                ; for emacs 21
+  '(if (not (functionp 'irc))
+       (defun irc (x)
+	 (interactive "P")
+	 (if x
+	     (call-interactively 'rcirc)
+	   (rcirc rcirc-server rcirc-port rcirc-nick
+		  (rcirc-startup-channels rcirc-server))))))
