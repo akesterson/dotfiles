@@ -16,13 +16,13 @@ function jira_filter()
 		grep -v "^\"Key" | \
 		sed  	\
 			-e s/"\"\""/"\"Unassigned\""/g \
-			-e s/" - Sev [0-9] ([0-9])"//g \
-			-e s/"\"Major\""/"\"$(echo -e '\033[0;31;40m')Major$(echo -e '\033[0m')\""/g  \
-			-e s/"\"Critical\""/"\"$(echo -e '\033[0;31;40m')Critical$(echo -e '\033[0m')\""/g |\
+			-e s/"\"P2 - Major (3)\""/"\"$(echo -e '\033[0;31;40m')Major$(echo -e '\033[0m')\""/g  \
+			-e s/"\"P3 - Critical (4)\""/"\"$(echo -e '\033[0;31;40m')Critical$(echo -e '\033[0m')\""/g \
+			-e s/"\"P[0-9] - \([a-zA-Z]*\) ([0-9])\""/"\"\1\""/g |\
 		 cut -d , -f 1,6,7,10,12 |\
 		 sed 	\
 			-e s/"^\""//g \
-			-e s/"\",\""/"    "/g \
+			-e s/"\",\""/"\t"/g \
 			-e s/"\"$"/""/g \
 			-e s/"$"/"\n"/g
 }
@@ -72,8 +72,8 @@ function jira_ticket()
 	--type "$tkt_type" \
 	--summary "$summary" \
 	--description "$description" \
-        $custom $version $parent > ~/.$$.jira_ticket
-    export JIRATICKET=$(grep -Eo "${project}-[0-9]+" ~/.$$.jira_ticket)
+        $custom $version $parent 2>&1 > ~/.$$.jira_ticket
+    export JIRATICKET=$(grep -Eo "${project}-[0-9]+" ~/.$$.jira_ticket | head -n 1)
     cat ~/.$$.jira_ticket
     rm -f ~/.$$.jira_ticket
 }
