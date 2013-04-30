@@ -72,5 +72,8 @@ function jira_ticket()
 	--type "$tkt_type" \
 	--summary "$summary" \
 	--description "$description" \
-        $custom $version $parent
+        $custom $version $parent > ~/.$$.jira_ticket
+    export JIRATICKET=$(grep -Eo "${project}-[0-9]+" ~/.$$.jira_ticket)
+    cat ~/.$$.jira_ticket
+    rm -f ~/.$$.jira_ticket
 }
