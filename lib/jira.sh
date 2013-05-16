@@ -15,6 +15,11 @@ function jira_start()
     fi
 
     mkdir -p ~/tmp/jira_logs
+    if [ -f ~/tmp/jira_logs/$1 ]; then
+	echo "Prior work log exists for $1, please \"jira_stop $1\" or" >&2
+	echo "manually remove ~/tmp/jira_logs/$1" >&2
+	return 1
+    fi
     date "+%s" > ~/tmp/jira_logs/$1
     echo "Started work on $1"
 }
@@ -26,6 +31,7 @@ function jira_stop()
 	echo
 	echo "Stops the work timer for the given issue and posts the log to the ticket."
 	echo "If there is a comment, that will be posted as well."
+	return 1
     fi
 
     NOW=$(date "+%s")
@@ -42,6 +48,25 @@ function jira_stop()
 	--issue $1 \
 	--timeSpent "${SPENT}m" \
 	--comment "$2"
+}
+
+function jira_timeclock()
+{
+    if [ "$1" == "--help" ]; then
+	echo "jira_timeclock"
+	echo
+	echo "Show all currently active work timers."
+	return 1
+    fi
+
+    cd ~/tmp/jira_logs
+    for file in *; do
+	NOW=$(date "+%s")
+	THEN=$(cat $file 2>/dev/null || echo $NOW)
+	SPENT=$(expr $(expr $NOW - $THEN) / 60)
+	echo "$file	${SPENT} minutes"
+    done
+    cd $OLDPWD
 }
 
 function jira_filter()
