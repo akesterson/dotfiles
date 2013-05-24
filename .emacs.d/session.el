@@ -7,4 +7,3 @@
 (other-window 1)
 (dired "~/")
 (other-window 1)
-(w3m-browse-url "http://wiki.qa.tpp.tsysecom.com:8080/")
