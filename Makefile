@@ -1,11 +1,15 @@
 bashfile=$(shell if [ "$$(uname)" == "Darwin" ]; then echo ~/.bash_profile ; else echo ~/.bashrc ; fi)
 CLI_VERSION=330
 
-install:
+jira.sh: /opt/atlassian-cli/jira.sh
+
+/opt/atlassian-cli/jira.sh:
 	echo "Installing version 3.3.0 of atlassian-cli, edit the Makefile if this isn't what you want..."
 	wget https://marketplace.atlassian.com/download/plugins/org.swift.atlassian.cli/version/${CLI_VERSION} -O cli.zip
 	unzip cli.zip
 	mv atlassian-cli-3.3.0 /opt/atlassian-cli
+
+install: jira.sh
 	mkdir -p ~/bin/
 	mkdir -p ~/lib/
 	mkdir -p ~/etc/
@@ -20,3 +24,5 @@ install:
 	echo 'source ~/lib/bamboo.sh' >> $(bashfile)
 	echo 'source ~/lib/hg.sh' >> $(bashfile)
 	echo 'source ~/lib/misc.sh' >> $(bashfile)
+	echo 'source ~/lib/stash.sh' >> $(bashfile)
+	echo 'source ~/lib/sshagent.sh ; sshagent ; . ~/.ssh-agent' >> $(bashfile)
